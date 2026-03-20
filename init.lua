@@ -175,6 +175,12 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Map Alt+n to ESC in normal, insert, and visual mode
+vim.keymap.set({ 'i', 'n', 'v' }, '<A-n>', '<Esc>', { noremap = true, silent = true })
+
+-- resolve import
+vim.keymap.set('n', '<leader>oi', function(n) vim.lsp.buf.code_action { context = { only = { 'source.organizeImports' } }, apply = true } end)
+
 -- Diagnostic Config & Keymaps
 -- See :help vim.diagnostic.Opts
 vim.diagnostic.config {
@@ -328,6 +334,20 @@ require('lazy').setup({
     },
   },
 
+  {
+    'f-person/git-blame.nvim',
+    event = 'VeryLazy',
+    opts = {
+      enabled = false,
+      message_template = ' <summary> • <date> • <author> • <<sha>>', -- template for the blame message, check the Message template section for more options
+      date_format = '%m-%d-%Y %H:%M:%S', -- template for the date, check Date format section for more options
+      virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+    },
+    keys = {
+      { '<leader>gb', '<cmd>GitBlameToggle<cr>', desc = 'Toggle Git Blame' },
+    },
+  },
+
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
   --    {
@@ -464,6 +484,7 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+
         extensions = {
           ['ui-select'] = { require('telescope.themes').get_dropdown() },
         },
@@ -699,7 +720,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         gopls = {},
-        -- pyright = {},
+        pyright = {},
         rust_analyzer = {},
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
